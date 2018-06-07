@@ -1,0 +1,8 @@
+instalooter
+requests
+sqlalchemy
+numpy
+tensorflow
+slacker
+psycopg2-binary
+fs
