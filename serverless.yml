@@ -61,7 +61,7 @@ provider:
 #    - exclude-me-dir/**
 
 functions:
-  hello:
+  soup-bot:
     handler: tracker.update
     vpc:
        securityGroupIds:
@@ -74,6 +74,20 @@ functions:
     events:
       - schedule:
           rate: cron(0/15 15 ? * MON-FRI *)
+          enabled: true
+  provision:
+    handler: provision.lambda_handler
+    timeout: 90
+    role: provisionRole
+    events:
+      -schedule:
+          rate: cron(50 14 ? * MON-FRI *)
+          input: ' {"mode": "stop","region": "us-east-1","ec2_instance": "i-0c07f193a512e6680","rds_instance": "super-soup2"}'
+          enabled: true
+      -schedule:
+          rate: cron(10 16 ? * MON-FRI *)
+          input: ' {"mode": "stop","region": "us-east-1","ec2_instance": "i-0c07f193a512e6680","rds_instance": "super-soup2"}'
+          enabled: true
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
@@ -119,6 +133,40 @@ functions:
 #     NewOutput:
 #       Description: "Description for the output"
 #       Value: "Some output value"
+
+resources:
+    provisionRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: ProvisionRole
+        AssumeRolePolicyDocument:
+          Version: '2018'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action: sts:AssumeRole
+        Policies:
+          - PolicyName: provisionPolicy
+            PolicyDocument:
+              Version: '2018'
+              Statement:
+                -  Effect: "Allow"
+                   Action:
+                     - rds:StopDBInstance
+                     - rds:StartDBInstance
+                  Resource: "*"
+                -  Effect: "Allow"
+                   Action:
+                     - ec2:Start*
+                     - ec2:Stop*
+                     - ec2:DescribeInstanceStatus*
+                     - ec2:AllocateAddress
+                     - ec2:AssociateAddress
+                     - ec2:DisassociateAddress
+                     - ec2:ReleaseAddress
+                  Resource: "*"
 
 plugins:
   - serverless-python-requirements
