@@ -1,0 +1,1 @@
+[Blog post](http://blog.matthewbrunelle.com/projects/2018/05/07/Soup-Bot.html) detailing project available.
