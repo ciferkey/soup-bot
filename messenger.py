@@ -1,5 +1,6 @@
 from slacker import Slacker
 import os
+from datetime import datetime
 
 
 class Messenger:
@@ -12,7 +13,18 @@ class Messenger:
         print("configured messenger")
 
     def post_message_to_channel(self, image):
-        message = "I am {:.2%} sure this is the newest soup board: {}".format(image.soup_confidence, image.url)
+
+        message_template = "I am {:.2%} sure this is the newest specials board: {}"
+
+
+        current_date = datetime.now().date()
+        date = datetime.fromtimestamp(image.post_date).date()
+
+        if (date != current_date):
+            message_template = "I am {:.2%} sure this is the most recent specials board, however it was posted on " \
+                               + str(date) + " : {}"
+
+        message = message_template.format(image.soup_confidence, image.url)
 
         print(f"posting message to channel:\n\t {message}")
 

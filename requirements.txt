@@ -4,5 +4,6 @@ sqlalchemy
 numpy
 tensorflow
 slacker
-psycopg2-binary
+mysql-connector-python
+sqlalchemy-utils
 fs

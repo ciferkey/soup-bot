@@ -13,7 +13,8 @@ class Image(Base):
     Holds the image data from a scraped post and the classification from tensorflow
     """
     __tablename__ = 'images'
-    url = Column(String, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    url = Column(TEXT(300))
     post_date = Column(Integer)
     soup_confidence = Column(Float)
     posted = Column(Integer, default=0)

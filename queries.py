@@ -1,7 +1,9 @@
 import os
+from sqlalchemy import *
 from sqlalchemy.orm import *
 from entities import *
 from datetime import datetime, timedelta
+from sqlalchemy_utils import database_exists, create_database
 
 
 class Queries:
@@ -17,16 +19,21 @@ class Queries:
         """
         print("Initializing query engine.")
         if os.environ.get("ENV", None) == "AWS":
-            print("Connecting to postgres database on AWS")
+            print("Connecting to serverless aurora database on AWS")
             rds_user = os.environ.get("RDS_USER")
             rds_password = os.environ.get("RDS_PASSWORD")
-            rds_port = os.environ.get("RDS_PORT", 5432)
+            rds_port = os.environ.get("RDS_PORT", 3306)
             rds_host = os.environ.get("RDS_HOST")
 
-            url = f'postgresql://{rds_user}:{rds_password}@{rds_host}:{rds_port}/soup'
+            url = f'mysql+mysqlconnector://{rds_user}:{rds_password}@{rds_host}:{rds_port}/soup'
 
             self.engine = create_engine(url)
-            print("Connected to postgres database on AWS")
+
+            if not database_exists(self.engine.url):
+                print("Database does not exist. Creating.")
+                create_database(self.engine.url)
+
+            print("Connected to mysql database on AWS")
             # Do I actually... miss DI?
         else:
             print("Connecting to local sqlite database")
