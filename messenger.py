@@ -14,15 +14,15 @@ class Messenger:
 
     def post_message_to_channel(self, image):
 
-        message_template = "I am {:.2%} sure this is the newest specials board: {}"
+        message_template = "Beep boop soup ({:.2%}): {}"
 
 
         current_date = datetime.now().date()
         date = datetime.fromtimestamp(image.post_date).date()
 
         if (date != current_date):
-            message_template = "I am {:.2%} sure this is the most recent specials board, however it was posted on " \
-                               + str(date) + " : {}"
+            message_template = "Beep boop soup ({:.2%}) [However it was posted on " \
+                               + str(date) + "] : {}"
 
         message = message_template.format(image.soup_confidence, image.url)
 
